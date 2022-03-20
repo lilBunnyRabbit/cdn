@@ -16,7 +16,7 @@
  * Class representing app state
  * @extends EventTarget
  */
-export class State extends EventTarget {
+class State extends EventTarget {
   /**
    * State storage
    * @private
@@ -406,7 +406,7 @@ class StateElement {
  * Class representing component with StateElements
  * @class
  */
-export class StateComponent {
+class StateComponent {
   /**
    * State that the component belongs to
    * @private
@@ -480,3 +480,7 @@ export class StateComponent {
     Object.keys(this.states).forEach((key) => this.states[key].reset());
   }
 }
+
+window.State = State;
+window.StateElement = StateElement;
+window.StateComponent = StateComponent;

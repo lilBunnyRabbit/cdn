@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/lib/projectTester.js"></script>
+
+    <title>State v0.0.0</title>
+    <script src="/src/state.js"></script>
+  </head>
+  <body>
+    <script>
+      test("Can access all objects", (assert) => {
+        assert.defined(State, "State");
+        assert.defined(StateElement, "StateElement");
+        assert.defined(StateComponent, "StateComponent");
+      });
+
+      test("Can create State", (assert) => {
+        const state = new State({});
+        assert.defined(state);
+      });
+
+      test("Can create State with configuration", (assert) => {
+        const config = {
+          useLocalStorage: true,
+          useEvents: true,
+          onBeforeSet: null,
+        };
+
+        const state = new State(config);
+        const stateConfig = state.config;
+
+        Object.keys(stateConfig).forEach((key) => {
+          assert.equal(stateConfig[key], config[key]);
+        });
+      });
+
+      test("Can create State with initial elements", (assert) => {
+        const state = new State(
+          {},
+          {
+            test: {
+              defaultValue: 123,
+            },
+          }
+        );
+
+        assert.truthy(state.elements.has("test"));
+      });
+
+      test("Can initialize StateElement", (assert) => {
+        const state = new State({});
+
+        const config = {
+          useEvents: true,
+        };
+
+        const stateElement = state.init("test", 123, config);
+        assert.defined(stateElement);
+        assert.defined(stateElement.state);
+        assert.equal(stateElement.key, "test");
+        assert.equal(stateElement.defaultValue, 123);
+        assert.equal(stateElement.type, "number");
+
+        const stateElementConfig = stateElement.config;
+        Object.keys(stateElementConfig).forEach((key) => {
+          assert.equal(stateElementConfig[key], config[key]);
+        });
+
+        assert.truthy(state.elements.has("test"));
+      });
+
+      test("Can attach to State", (assert) => {
+        const state = new State(
+          {},
+          {
+            test: {
+              defaultValue: 123,
+            },
+          }
+        );
+
+        const stateElement = state.attach("test");
+        assert.defined(stateElement);
+      });
+
+      test("Can edit StateElement value", (assert) => {
+        const state = new State(
+          {},
+          {
+            test: {
+              defaultValue: 123,
+            },
+          }
+        );
+
+        const stateElement = state.attach("test");
+        stateElement.set(456);
+        assert.equal(stateElement.get(), 456);
+      });
+
+      test("Can reset StateElement value to it's default value", (assert) => {
+        const state = new State(
+          {},
+          {
+            test: {
+              defaultValue: 123,
+            },
+          }
+        );
+
+        const stateElement = state.attach("test");
+        stateElement.set(456);
+        stateElement.reset();
+        assert.equal(stateElement.get(), 123);
+      });
+
+      test("Can listen to StateElement value change", async (assert) => {
+        const state = new State(
+          {},
+          {
+            test: {
+              defaultValue: 123,
+              config: {
+                useEvents: true,
+              },
+            },
+          }
+        );
+
+        return new Promise((resolve, reject) => {
+          const stateElement = state.attach("test").addListener((value) => {
+            try {
+              assert.equal(value, 456);
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          });
+
+          assert.timeout(
+            "Failed to get value change event",
+            (error) => {
+              reject(error);
+            },
+            1000
+          );
+
+          stateElement.set(456);
+        });
+      });
+
+      test("Can create StateComponent with no StateElement's", (assert) => {
+        const state = new State({});
+
+        const stateComponent = new (class extends StateComponent {
+          constructor() {
+            super(state);
+          }
+        })();
+
+        assert.defined(stateComponent);
+        assert.equal(Object.keys(stateComponent.states).length, 0);
+      });
+
+      test("Can create StateComponent with all initialized StateElement's", (assert) => {
+        const state = new State(
+          {},
+          {
+            test: {
+              defaultValue: 123,
+            },
+          }
+        );
+
+        const stateComponent = new (class extends StateComponent {
+          constructor() {
+            super(state, true);
+          }
+        })();
+
+        const stateComponentStates = stateComponent.states;
+        state.elements.forEach((_, key) => {
+          assert.truthy(stateComponentStates.hasOwnProperty(key));
+        });
+      });
+
+      test("Can access and edit StateElement's from StateComponent", (assert) => {
+        const state = new State(
+          {},
+          {
+            test: {
+              defaultValue: 123,
+            },
+          }
+        );
+
+        new (class extends StateComponent {
+          constructor() {
+            super(state, ["test"]);
+
+            assert.equal(this.states.test.get(), 123);
+            this.states.test.set(456);
+            assert.equal(this.states.test.get(), 456);
+          }
+        })();
+      });
+
+      test("Can reset StateElement's values to default value from StateComponent", (assert) => {
+        const state = new State(
+          {},
+          {
+            test: {
+              defaultValue: 123,
+            },
+          }
+        );
+
+        new (class extends StateComponent {
+          constructor() {
+            super(state, ["test"]);
+
+            this.states.test.set(456);
+            assert.equal(this.states.test.get(), 456);
+            this.$resetAll();
+            assert.equal(this.states.test.get(), 123);
+          }
+        })();
+      });
+
+      test("Can listen to StateElement event from StateComponent", async (assert) => {
+        const state = new State(
+          {},
+          {
+            test: {
+              defaultValue: 123,
+              config: {
+                useEvents: true,
+              },
+            },
+          }
+        );
+
+        return new Promise((resolve, reject) => {
+          new (class extends StateComponent {
+            constructor() {
+              super(state, ["test"]);
+
+              this.states.test.set(456);
+            }
+
+            $onStateChange(key, value) {
+              try {
+                assert.equal(key, "test");
+                assert.equal(value, 456);
+                resolve();
+              } catch (error) {
+                reject(error);
+              }
+            }
+          })();
+
+          assert.timeout(
+            'Failed to get "$onStateChange" event',
+            (error) => {
+              reject(error);
+            },
+            1000
+          );
+        });
+      });
+
+      test("Can listen to all StateElement's from StateComponent with no StateElement's", async (assert) => {
+        const state = new State({ useChangeEvent: true });
+
+        const stateElement = state.init("test", 123, { useEvents: true });
+
+        return new Promise((resolve, reject) => {
+          new (class extends StateComponent {
+            constructor() {
+              super(state);
+            }
+
+            $onStateChange(key, value) {
+              try {
+                assert.equal(key, "test");
+                assert.equal(value, 456);
+                resolve();
+              } catch (error) {
+                reject(error);
+              }
+            }
+          })();
+
+          assert.timeout(
+            'Failed to get "$onStateChange" event',
+            (error) => {
+              reject(error);
+            },
+            1000
+          );
+
+          stateElement.set(456);
+        });
+      });
+
+      test("Can listen to all StateElement's from StateComponent with all StateElement's", async (assert) => {
+        const state = new State(
+          {},
+          {
+            test: {
+              defaultValue: 123,
+              config: {
+                useEvents: true,
+              },
+            },
+          }
+        );
+
+        return new Promise((resolve, reject) => {
+          new (class extends StateComponent {
+            constructor() {
+              super(state, true);
+
+              this.states.test.set(456);
+            }
+
+            $onStateChange(key, value) {
+              try {
+                assert.equal(key, "test");
+                assert.equal(value, 456);
+                resolve();
+              } catch (error) {
+                reject(error);
+              }
+            }
+          })();
+
+          assert.timeout(
+            'Failed to get "$onStateChange" event',
+            (error) => {
+              reject(error);
+            },
+            1000
+          );
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/github-dark.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
+
+    <title>lilVersion v0.0.0</title>
+  </head>
+  <body>
+    <script type="module">
+      import ProjectDoc from "https://lilbunnyrabbit.github.io/cdn/utils/doc/doc.js";
+
+      ProjectDoc.genInfo((info) => {
+        info("Version display for vanilla JavaScript projects.");
+        info([
+          "",
+          "To install it either include the normal or minified script in your HTML file.",
+          {
+            type: "code",
+            data: '&lt;script src="https://lilbunnyrabbit.github.io/cdn/libs/lilversion/0.0.0/lilversion.js"&gt;&lt;/script&gt;',
+            lang: "html",
+          },
+          {
+            type: "code",
+            data: '&lt;script src="https://lilbunnyrabbit.github.io/cdn/libs/lilversion/0.0.0/lilversion.min.js"&gt;&lt;/script&gt;',
+            lang: "html",
+          },
+        ]);
+        info([
+          "",
+          "Example:",
+          {
+            type: "code",
+            data: '&lt;script src="version.js" prefix="Version " version="1.0.0" placement="top-right"&gt;&lt;/script&gt;',
+            lang: "html",
+          },
+        ]);
+      });
+
+      ProjectDoc.genDocs((docs) => {
+        docs.type("prefix", {
+          description: "Version prefix.",
+          type: "string",
+        });
+        docs.type("version", {
+          description: "Version value.",
+          type: "string",
+        });
+        docs.type("placement", {
+          description: "Version element placement.",
+          type: '"top-left" | "bottom-left" | "bottom-right" | "top-right"',
+        });
+      });
+    </script>
+  </body>
+</html>

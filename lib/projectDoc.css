@@ -1,0 +1,394 @@
+/* Theme */
+:root {
+  --c-description: #d9d9d9;
+  --c-name: #fff;
+  --c-keyword: #8c71d9;
+  --c-contructor: #d9b371;
+  --c-method: #d9b371;
+  --c-type: #71bbd9;
+  --c-type-link: #7195d9;
+  --c-variable: #d771d9;
+  --c-argument: #d99e71;
+
+  --e-class: #509959;
+  --e-class-bg: #5099597f;
+  --e-class-bg-2: #5099591c;
+
+  --e-object: #645099;
+  --e-object-bg: #6450997f;
+  --e-object-bg-2: #6450991c;
+
+  --e-type: #508a99;
+  --e-type-bg: #508a997f;
+  --e-type-bg-2: #508a991c;
+
+  --e-test: #699950;
+  --e-test-bg: #6999507f;
+  --e-test-bg-2: #6999501c;
+
+  --e-test-error: #995050;
+  --e-test-error-bg: #9950507f;
+  --e-test-error-bg-2: #9950501c;
+
+  --bg: #18181b;
+  --text: #f6f6f6;
+}
+
+/* Default */
+html {
+  font-family: Consolas;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 32px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+body > * {
+  width: 100%;
+  max-width: 1000px;
+}
+
+/* Overrides */
+code.hljs {
+  padding: 0px !important;
+  background: transparent !important;
+}
+
+/* Colors */
+.c-description {
+  color: var(--c-description);
+}
+.c-name {
+  color: var(--c-name);
+}
+.c-keyword {
+  color: var(--c-keyword);
+}
+.c-constructor {
+  color: var(--c-contructor);
+}
+.c-method {
+  color: var(--c-method);
+}
+.c-type {
+  color: var(--c-type);
+}
+.c-type-link {
+  color: var(--c-type-link);
+}
+.c-variable {
+  color: var(--c-variable);
+}
+.c-argument {
+  color: var(--c-argument);
+}
+
+/* Classes */
+.title {
+  font-size: 24px;
+  text-align: center;
+}
+
+.section {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 8px;
+  border-bottom: 1px solid var(--text);
+}
+
+.sub-section {
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid var(--text);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Classes - Docs */
+.doc-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.doc-column.tab {
+  padding: 0px 16px;
+}
+
+.doc-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.doc-row.no-gap {
+  gap: 0px;
+}
+
+.doc-row.between {
+  justify-content: space-between;
+}
+
+.doc-list {
+  display: flex;
+  flex-direction: column;
+  line-height: 20px;
+}
+
+.doc-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid var(--text);
+  box-sizing: border-box;
+}
+
+.doc-container.class {
+  border-color: var(--e-class);
+}
+
+.doc-container.object {
+  border-color: var(--e-object);
+}
+
+.doc-container.type {
+  border-color: var(--e-type);
+}
+
+.doc-container.test {
+  border-color: var(--e-test);
+}
+
+.doc-container.test.error {
+  border-color: var(--e-test-error);
+}
+
+.doc-title {
+  width: 100%;
+  background: var(--bg);
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.doc-title > *:first-child {
+  padding: 8px;
+  border-right: 1px solid;
+  flex: 1;
+}
+
+.doc-title > *:last-child {
+  padding: 8px;
+  font-size: 14px;
+  width: 75px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.doc-container.class > .doc-title {
+  background: var(--e-class-bg);
+}
+
+.doc-container.object > .doc-title {
+  background: var(--e-object-bg);
+}
+
+.doc-container.type > .doc-title {
+  background: var(--e-type-bg);
+}
+
+.doc-container.test > .doc-title {
+  background: var(--e-test-bg);
+}
+
+.doc-container.test.error > .doc-title {
+  background: var(--e-test-error-bg);
+}
+
+.doc-body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  border-top: 1px solid var(--text);
+}
+
+.doc-container.class > .doc-body {
+  background: var(--e-class-bg-2);
+  border-color: var(--e-class);
+}
+
+.doc-container.object > .doc-body {
+  background: var(--e-object-bg-2);
+  border-color: var(--e-object);
+}
+
+.doc-container.type > .doc-body {
+  background: var(--e-type-bg-2);
+  border-color: var(--e-type);
+}
+
+.doc-container.test > .doc-body {
+  background: var(--e-test-bg-2);
+  border-color: var(--e-test);
+}
+
+.doc-container.test.error > .doc-body {
+  background: var(--e-test-error-bg-2);
+  border-color: var(--e-test-error);
+}
+
+.doc-container.hidden > .doc-body {
+  display: none;
+}
+
+.doc-container.hidden > .doc-title * .icon-chevron {
+  transform: rotate(90deg);
+}
+
+.doc-body > * {
+  border-bottom: 1px solid var(--text);
+  padding: 8px;
+}
+
+.doc-container.class * * {
+  border-color: var(--e-class);
+}
+
+.doc-container.object * * {
+  border-color: var(--e-object);
+}
+
+.doc-container.type * * {
+  border-color: var(--e-type);
+}
+
+.doc-container.test * * {
+  border-color: var(--e-test);
+}
+
+.doc-container.test.error * * {
+  border-color: var(--e-test-error);
+}
+
+.doc-body > *:last-child {
+  border-bottom: none;
+}
+
+.doc-keyword {
+  background: var(--c-keyword);
+  text-transform: uppercase;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+  width: -moz-fit-content;
+  width: fit-content;
+  color: var(--text);
+}
+
+.doc-type-link {
+  color: var(--c-type-link);
+}
+
+.doc-table-container {
+  overflow-x: auto;
+  margin-bottom: 8px;
+}
+
+.doc-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.doc-table * th {
+  text-align: left;
+  padding: 4px 8px;
+}
+
+.doc-table * td {
+  text-align: left;
+  vertical-align: top;
+  padding: 4px 8px;
+  border-right: 1px solid;
+}
+
+.doc-table * tr {
+  border-bottom: 1px solid var(--text);
+  border-left: 1px solid var(--text);
+  border-right: 1px solid var(--text);
+}
+
+.doc-container.class * .doc-table {
+  border-color: var(--e-class);
+}
+
+.doc-container.object * .doc-table {
+  border-color: var(--e-object);
+}
+
+.doc-container.type * .doc-table {
+  border-color: var(--e-type);
+}
+
+.doc-container.test * .doc-table {
+  border-color: var(--e-test);
+}
+
+.doc-container.test.error * .doc-table {
+  border-color: var(--e-test-error);
+}
+
+.doc-table * tr:first-child {
+  border-top: 1px solid var(--text);
+  background: var(--bg);
+}
+
+.doc-container.class * .doc-table * tr:first-child {
+  border-color: var(--e-class);
+  background: var(--e-class-bg);
+}
+
+.doc-container.object * .doc-table * tr:first-child {
+  border-color: var(--e-object);
+  background: var(--e-object-bg);
+}
+
+.doc-container.type * .doc-table * tr:first-child {
+  border-color: var(--e-type);
+  background: var(--e-type-bg);
+}
+
+.doc-container.test * .doc-table * tr:first-child {
+  border-color: var(--e-test);
+  background: var(--e-test-bg);
+}
+
+.doc-container.test.error * .doc-table * tr:first-child {
+  border-color: var(--e-test-error);
+  background: var(--e-test-error-bg);
+}
+
+.test-code > pre {
+  margin: 0px;
+}

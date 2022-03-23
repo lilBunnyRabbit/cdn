@@ -4,66 +4,62 @@
 
 {
   /**
-   * Type of stored values
-   * @typedef {(bigint | boolean | symbol | number | object | string)} StorageValue
-   */
-
-  /**
-   * Type of storage values type
-   * @typedef {("bigint" | "boolean" | "symbol" | "number" | "object" | "string")} StorageValueType
-   */
-
-  /**
-   * Class representing state
+   * Class representing main control unit for state management.
    * @extends EventTarget
    */
   class State extends EventTarget {
     /**
-     * State storage
+     * State configuration.
+     * @typedef {Object} StateConfig
+     * @property {boolean} [useChangeEvent] - Dispatch "change" event when any element is updated.
+     * @property {boolean} [useLogs] - Enable/disable logging.
+     */
+
+    /**
+     * Type of stored values.
+     * @typedef {(bigint | boolean | symbol | number | object | string)} StorageValue
+     */
+
+    /**
+     * String type of StorageValue.
+     * @typedef {("bigint" | "boolean" | "symbol" | "number" | "object" | "string")} StorageValueType
+     */
+
+    /**
+     * State storage.
      * @private
      * @type {Map<string, StorageValue>}
      */
     #storage = new Map();
 
     /**
-     * State elements
+     * Initialized StateElement's.
      * @private
      * @type {Map<string, StateElement>}
      */
     #elements = new Map();
 
     /**
-     * State configuration
+     * State configuration.
      * @private
-     * @type {Object}
+     * @type {StateConfig}
      */
     #config = {
       useChangeEvent: false,
-      useLogs: true,
+      useLogs: false,
     };
 
     /**
-     * Represents a State
+     * Create new State.
      * @constructor
-     * @param {Object} [config] - State configuration
-     * @param {boolean} [config.useChangeEvent] - Dispatch "change" event when value is set
-     * @param {boolean} [config.useLogs] - Enable/disable logging
-     * @param {Object.<
-     *  string,
-     *  {
-     *    defaultValue: StorageValue,
-     *    config?: {
-     *      useLocalStorage?: boolean,
-     *      useEvents?: boolean
-     *    }
-     *  }
-     * >} [initElements]
+     * @param {StateConfig} [config] - State configuration.
+     * @param {Object.<string, StateElementOptions>} [initElements] - "List" of StateElement's to initialize.
      */
     constructor(config, initElements) {
       super();
 
       if (config) {
-        this.#config = config;
+        this.#config = { ...this.#config, ...config };
       }
 
       if (this.#config.useLogs) {
@@ -95,19 +91,17 @@
     }
 
     /**
-     * @returns {Object}
+     * @returns {StateConfig}
      */
     get config() {
       return this.#config;
     }
 
     /**
-     * Set state value
-     * @param {string} key
-     * @param {StorageValue} value
-     * @param {Object} config
-     * @param {boolean} [config.useLocalStorage] - Save to local storage
-     * @param {boolean} [config.useEvents] - Dispatch events
+     * Set value for selected key.
+     * @param {string} key - Selected key.
+     * @param {StorageValue} value - Value to be stored.
+     * @param {StateElementConfig} config - StateElement configuration.
      */
     set(key, value, config) {
       this.#storage.set(key, value);
@@ -126,8 +120,8 @@
     }
 
     /**
-     * Get state value
-     * @param {string} key
+     * Get stored value for selected key.
+     * @param {string} key - Selected key.
      * @returns {StorageValue}
      */
     get(key) {
@@ -135,7 +129,7 @@
     }
 
     /**
-     * Convert value to string
+     * Convert value to string.
      * @private
      * @param {StorageValue} value
      * @returns {string}
@@ -160,10 +154,10 @@
     }
 
     /**
-     * Convert string to value
+     * Convert string to value.
      * @private
      * @param {string} value
-     * @param {StorageValueType} type - Value type
+     * @param {StorageValueType} type - value type.
      * @returns {StorageValue}
      * @throws {Error}
      */
@@ -189,14 +183,9 @@
     }
 
     /**
-     * Init new state element
-     * @param {string} key
-     * @param {Object} opts
-     * @param {StorageValue} opts.defaultValue - StateElement default value
-     * @param {Object} [opts.config] - StateElement configuration
-     * @param {boolean} [opts.config.useLocalStorage] - Save to local storage
-     * @param {boolean} [opts.config.useEvents] - Dispatch events
-     * @param {function((StorageValue)): (StorageValue)} [opts.config.onBeforeSet] - Callback before the value is set
+     * Initialize new StateElement.
+     * @param {string} key - Unique key.
+     * @param {StateElementOptions} opts - StateElement options.
      * @returns {StateElement}
      * @throws {Error}
      */
@@ -227,8 +216,8 @@
     }
 
     /**
-     * Attach to StateElement
-     * @param {string} key
+     * Attach to initialized StateElement.
+     * @param {string} key - Selected key.
      * @returns {StateElement}
      * @throws {Error}
      */
@@ -243,40 +232,56 @@
   }
 
   /**
-   * Class representing state for unique key
+   * Class representing state for unique key.
+   * The purpose of this class is to control a specific State element.
    * @class
    */
   class StateElement {
     /**
-     * State that the element belongs to
+     * StateElement configuration.
+     * @typedef {Object} StateElementConfig
+     * @property {boolean} [useLocalStorage] - Enable/disable using local storage for storing and retrieving data.
+     * @property {boolean} [useEvents] - Enable/disable "change" event for the element.
+     * @property {function(StorageValue): StorageValue} [onBeforeSet] - Callback before the value is set.
+     */
+
+    /**
+     * StateElement options for creation.
+     * @typedef {Object} StateElementOptions
+     * @property {StorageValue} defaultValue - Default value used when reseting and when no value is stored in local storage.
+     * @property {StateElementConfig} [config] - StateElement configuration.
+     */
+
+    /**
+     * State that the StateElement belongs to.
      * @private
      * @type {State}
      */
     #state = null;
 
     /**
-     * State element key
+     * StateElement's unique key.
      * @private
      * @type {string}
      */
     #key = "";
 
     /**
-     * State element default value
+     * StateElement's default value.
      * @private
      * @type {StorageValue}
      */
     #defaultValue = undefined;
 
     /**
-     * State element value type
+     * StateElement's default value type.
      * @private
      * @type {StorageValueType}
      */
     #type = "";
 
     /**
-     * State element configuration
+     * StateElement's configuration.
      * @private
      * @type {Object}
      */
@@ -287,16 +292,11 @@
     };
 
     /**
-     * Represents a StateElement
+     * Create new StateElement.
      * @constructor
-     * @param {State} state - State that the element belongs to
-     * @param {string} key - State element key
-     * @param {Object} opts - State element options
-     * @param {StorageValue} opts.defaultValue - State element default value
-     * @param {Object} [opts.config] - State element configuration
-     * @param {boolean} [opts.config.useLocalStorage] - Save to local storage
-     * @param {boolean} [opts.config.useEvents] - Dispatch events
-     * @param {function((StorageValue)): (StorageValue)} [opts.config.onBeforeSet] - Callback before the value is set
+     * @param {State} state - State that the StateElement belongs to.
+     * @param {string} key - Selected key.
+     * @param {StateElementOptions} opts - StateElement options.
      */
     constructor(state, key, opts) {
       this.#state = state;
@@ -347,14 +347,14 @@
     }
 
     /**
-     * @returns {Object}
+     * @returns {StateElementConfig}
      */
     get config() {
       return this.#config;
     }
 
     /**
-     * Fetch state element value
+     * Get value for defined key from state.
      * @returns {StorageValue}
      */
     get() {
@@ -362,8 +362,8 @@
     }
 
     /**
-     * Set state element value
-     * @param {StorageValue} value
+     * Set value for defined key to state.
+     * @param {StorageValue} value - Value to be stored.
      */
     set(value) {
       if (typeof value !== this.#type) {
@@ -378,15 +378,15 @@
     }
 
     /**
-     * Set state element value to it's default value
+     * Reset value to default value.
      */
     reset() {
       this.set(this.#defaultValue);
     }
 
     /**
-     * Assign event listener for this element
-     * @param {function(StorageValue): void} listener
+     * Assign event listener for this StateElement.
+     * @param {function(StorageValue): StateElement} listener - Event callback.
      * @returns {StateElement}
      */
     addListener(listener) {
@@ -396,28 +396,32 @@
   }
 
   /**
-   * Class representing component with StateElements
+   * Class representing StateComponent for selected StateElement's.
+   * The purpose of this class is to be extended and override its "$onStateChange" method to listen to events.
    * @class
    */
   class StateComponent {
     /**
-     * State that the component belongs to
+     * State that the component belongs to.
      * @private
      * @type {State}
      */
     #state = null;
 
     /**
-     * Object of attached state elements
+     * Object of attached StateElement's.
      * @type {Object.<string, StateElement>}
      */
     states = {};
 
     /**
-     * Represents a StateComponent
+     * Create new StateComponent.
      * @constructor
-     * @param {State} state - State that the component belongs to
-     * @param {string[] | boolean} [elements] - List of StateElement keys. If the value is "true" all initialized StateElement's will be added.
+     * @param {State} state - State that the StateComponent belongs to.
+     * @param {string[] | boolean} [elements]
+     *   - If list of StateElement keys: those StateElement's will be attached.
+     *     If "true": all initialized StateElement's will be attached.
+     *     If "falsy": no StateElement will be attached but if a listenere is present it will listen to all initialized StateElement's.
      */
     constructor(state, elements) {
       this.#state = state;
@@ -463,22 +467,34 @@
     }
 
     /**
-     * Triggered when state is changed
+     * Triggers when any of the attached StateElement's is changed.
+     * If no StateElement is attached it will emit when any initialized StateElement is changed.
      * @param {string} key
      * @param {StorageValue} value
+     * @abstract
      */
     $onStateChange(key, value) {
       console.log(this.constructor.name, "$onStateChange", { key, value });
     }
 
     /**
-     * Reset all attached StateElement's to their default value
+     * Reset all attached StateElement's to their default value.
      */
     $resetAll() {
       Object.keys(this.states).forEach((key) => this.states[key].reset());
     }
   }
 
-  // Expose lilState
-  window.lilState = { State, StateComponent, StateElement };
+  /**
+   * @typedef {Object} lilState
+   * @property {State} State
+   * @property {StateElement} StateElement
+   * @property {StateComponent} StateComponent
+   */
+
+  /**
+   * Assigns objects to window.
+   * @type {lilState}
+   */
+  window.lilState = { State, StateElement, StateComponent };
 }

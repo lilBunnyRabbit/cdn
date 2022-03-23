@@ -1,6 +1,7 @@
 # lilBunnyRabbit CDN
 ## Projects
-### [State](libs/state/alpha-0.0.0/docs.md)
-State management for vanilla JavaScript
-### [Version](libs/version/0.0.0/docs.md)
-Console and page version display
+### [lilState](https://lilbunnyrabbit.github.io/cdn/libs/state/0.0.0/docs.html)
+State management for vanilla JavaScript projects.
+
+#### Versions
+- [0.0.0](https://lilbunnyrabbit.github.io/cdn/libs/state/0.0.0/docs.html) - `latest`

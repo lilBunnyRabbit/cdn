@@ -7,12 +7,12 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/github-dark.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
 
-    <title>lilState v0.0.0-alpha</title>
-    <script src="./lilState.js"></script>
+    <title>lilState v0.0.0</title>
+    <script src="./lilstate.js"></script>
   </head>
   <body>
     <script type="module">
-      import ProjectDoc from "../lib/doc.js";
+      import ProjectDoc from "https://lilbunnyrabbit.github.io/cdn/utils/doc/doc.js";
 
       ProjectDoc.genInfo((info) => {
         info("State management for vanilla JavaScript projects.");
@@ -21,12 +21,12 @@
           "To install it either include the normal or minified script in your HTML file.",
           {
             type: "code",
-            data: '&lt;script src="https://lilbunnyrabbit.github.io/cdn/libs/state/0.0.0-alpha/lilState.js"&gt;&lt;/script&gt;',
+            data: '&lt;script src="https://lilbunnyrabbit.github.io/cdn/libs/lilstate/0.0.0/lilstate.js"&gt;&lt;/script&gt;',
             lang: "html",
           },
           {
             type: "code",
-            data: '<script src="https://lilbunnyrabbit.github.io/cdn/libs/state/0.0.0-alpha/lilState.min.js">&lt;/script>',
+            data: '<script src="https://lilbunnyrabbit.github.io/cdn/libs/lilstate/0.0.0/lilstate.min.js">&lt;/script>',
             lang: "html",
           },
         ]);
@@ -411,16 +411,15 @@
 
         test("Can create State with configuration", (assert) => {
           const config = {
-            useLocalStorage: true,
-            useEvents: true,
-            onBeforeSet: null,
+            useChangeEvent: true,
+            useLogs: true,
           };
 
           const state = new State(config);
           const stateConfig = state.config;
 
-          Object.keys(stateConfig).forEach((key) => {
-            assert.equal(stateConfig[key], config[key]);
+          Object.keys(config).forEach((key) => {
+            assert.equal(stateConfig[key], config[key], `config["${key}"]`);
           });
         });
 
@@ -443,7 +442,9 @@
           const opts = {
             defaultValue: 123,
             config: {
+              useLocalStorage: true,
               useEvents: true,
+              onBeforeSet: null,
             },
           };
 
@@ -455,8 +456,8 @@
           assert.equal(stateElement.type, "number");
 
           const stateElementConfig = stateElement.config;
-          Object.keys(stateElementConfig).forEach((key) => {
-            assert.equal(stateElementConfig[key], opts.config[key]);
+          Object.keys(opts.config).forEach((key) => {
+            assert.equal(stateElementConfig[key], opts.config[key], `stateElementConfig["${key}"]`);
           });
 
           assert.truthy(state.elements.has("test"));
@@ -573,7 +574,7 @@
 
           const stateComponentStates = stateComponent.states;
           state.elements.forEach((_, key) => {
-            assert.truthy(stateComponentStates.hasOwnProperty(key));
+            assert.truthy(stateComponentStates.hasOwnProperty(key), `state.elements["${key}"]`);
           });
         });
 

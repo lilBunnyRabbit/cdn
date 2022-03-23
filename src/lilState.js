@@ -2,7 +2,7 @@
  * @author lilBunnyRabbit
  */
 
-{
+ {
   /**
    * Class representing main control unit for state management.
    * @extends EventTarget
@@ -305,7 +305,7 @@
       this.#type = typeof opts.defaultValue;
 
       if (opts.config) {
-        this.#config = opts.config;
+        this.#config = { ...this.#config, ...opts.config };
       }
 
       if (this.#state.config.useLogs) {

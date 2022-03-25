@@ -1,4 +1,4 @@
-import { keywordsToHtml } from "./docHtml.js";
+import { keywordsToHtml } from "./docsHtml.js";
 
 export const Element = {
   Title: (title) => {

@@ -7,12 +7,12 @@ import {
   extendsToHtml,
   codeToHtml,
   infoToHtml,
-} from "./docHtml.js";
-import { Element } from "./docElements.js";
-import { executeTest, formatCode } from "./docUtils.js";
-import { addCustomStyle } from "./docCss.js";
+} from "./docsHtml.js";
+import { Element } from "./docsElements.js";
+import { executeTest, formatCode } from "./docsUtils.js";
+import { addCustomStyle } from "./docsCss.js";
 
-class ProjectDoc {
+class ProjectDocs {
   #elements = {
     info: Element.Container("info", Element.Section("Information"), true),
     docs: Element.Container("docs", Element.Section("Docs"), true),
@@ -217,4 +217,4 @@ class ProjectDoc {
   }
 }
 
-export default new ProjectDoc();
+window.ProjectDocs = new ProjectDocs();

@@ -1,0 +1,28 @@
+{
+  "name": "docs-builder",
+  "description": "Documentation builder for CDN projects.",
+  "version": "0.0.0",
+  "main": "dist/docs.js",
+  "homepage": "https://github.com/lilBunnyRabbit/cdn#readme",
+  "author": {
+    "name": "lilBunnyRabbit",
+    "url": "https://github.com/lilBunnyRabbit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lilBunnyRabbit/cdn.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/lilBunnyRabbit/cdn/issues"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
+  },
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

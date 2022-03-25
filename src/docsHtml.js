@@ -1,4 +1,4 @@
-import { isTypeLink } from "./docUtils.js";
+import { isTypeLink } from "./docsUtils.js";
 
 export function textToValidHtml(t) {
   return t

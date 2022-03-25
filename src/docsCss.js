@@ -1,15 +1,16 @@
 const theme = {
   bg: "#18181b",
   "bg-2": "#2D2D33",
-  text: "#f6f6f6",
+  text: "#F0F0FC",
+  title: "#D8D8E3",
   c: {
-    description: "#d9d9d9",
-    info: "#d9d9d9",
+    description: "#D8D8E3",
+    info: "#D8D8E3",
     keyword: "#8566D9",
-    contructor: "#D9AF66",
+    constructor: "#D9AF66",
     method: "#D9AF66",
     type: "#66B8D9",
-    "type-link": "#668ED9",
+    link: "#668ED9",
     variable: "#D766D9",
     argument: "#D99866",
   },
@@ -22,24 +23,82 @@ const theme = {
   },
 };
 
-const rootStyle = document.documentElement.style;
+const highlightjsCss = `pre code.hljs{display:block;overflow-x:auto;padding:1em}/*!
+Theme: GitHub Dark
+Description: Dark theme as seen on github.com
+Author: github.com
+Maintainer: @Hirse
+Updated: 2021-05-15
+
+Outdated base version: https://github.com/primer/github-syntax-dark
+Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}`;
+
+const cssVariables = [];
+let dynamicCss = "";
+
 Object.keys(theme).forEach((type) => {
   const value = theme[type];
-  if (type === "e") {
-    Object.keys(value).forEach((key) => {
-      rootStyle.setProperty(`--${type}-${key}`, value[key]);
-      rootStyle.setProperty(`--${type}-${key}-bg`, value[key] + "7f");
-      rootStyle.setProperty(`--${type}-${key}-bg-2`, value[key] + "1c");
-    });
-  } else if (typeof value === "object") {
-    Object.keys(value).forEach((key) => rootStyle.setProperty(`--${type}-${key}`, value[key]));
+  if (typeof value === "object") {
+    if (type === "e") {
+      Object.keys(value).forEach((key) => {
+        cssVariables.push(
+          [`${type}-${key}`, value[key]],
+          [`${type}-${key}-bg`, value[key] + "66"],
+          [`${type}-${key}-bg-2`, value[key] + "33"]
+        );
+
+        dynamicCss += `
+          .docs-element.${key} {
+            border-color: var(--${type}-${key});
+          }
+          
+          .docs-element.${key} > .docs-element-title {
+            background: var(--${type}-${key}-bg);
+            stroke: var(--${type}-${key});
+          }
+
+          .docs-element.${key} > .docs-element-title > .docs-element-title-type {
+            color: var(--${type}-${key});
+          }
+          
+          .docs-element.${key} > .docs-element-body {
+            background: var(--${type}-${key}-bg-2);
+          }
+      
+          .docs-element.${key} * .docs-table-container {
+            border-color: var(--${type}-${key});
+          }
+      
+          .docs-element.${key} * .docs-table {
+            border-color: var(--${type}-${key});
+          }
+      
+          .docs-element.${key} * .docs-table * tr:first-child {
+            background: var(--${type}-${key}-bg);
+          }
+        `;
+      });
+    } else if (type === "c") {
+      Object.keys(value).forEach((key) => {
+        cssVariables.push([`${type}-${key}`, value[key]]);
+        dynamicCss += `.c-${key} { color: var(--${type}-${key}); }`;
+      });
+    } else {
+      Object.keys(value).forEach((key) => {
+        cssVariables.push([`${type}-${key}`, value[key]]);
+      });
+    }
   } else {
-    rootStyle.setProperty(`--${type}`, value);
+    cssVariables.push([type, value]);
   }
 });
 
-const css =
-  `
+const css = `
+:root {
+  ${cssVariables.map(([key, value]) => `--${key}: ${value};`).join("")}
+}
+
 /* Default */
 html {
   font-family: Consolas;
@@ -48,12 +107,22 @@ html {
 }
 
 body {
-  margin: 32px;
   position: relative;
   box-sizing: border-box;
+  margin: 0px;
 }
 
+a:hover {
+  filter: brightness(90%);
+}
+
+a:active {
+  filter: brightness(80%);
+}
+
+/* General */
 .root {
+  padding: 24px 32px 32px 32px;
   margin: auto;
   display: flex;
   flex-direction: column;
@@ -61,7 +130,7 @@ body {
   gap: 16px;
   position: relative;
   box-sizing: border-box;
-  max-width: 1000px;
+  max-width: 1024px;
   position: relative;
   animation-name: fadeIn;
   animation-duration: 250ms;
@@ -76,65 +145,47 @@ body {
   to { opacity: 1; }
 }
 
-/* Overrides */
-code.hljs {
-  padding: 0px !important;
-  background: transparent !important;
-}
-
-/* Colors */
-.c-description {
-  color: var(--c-description);
-}
-.c-keyword {
-  color: var(--c-keyword);
-}
-.c-constructor {
-  color: var(--c-contructor);
-}
-.c-method {
-  color: var(--c-method);
-}
-.c-type {
-  color: var(--c-type);
-}
-.c-type-link {
-  color: var(--c-type-link);
-}
-.c-variable {
-  color: var(--c-variable);
-}
-.c-argument {
-  color: var(--c-argument);
-}
-.c-info {
-  color: var(--c-info);
-}
-
 /* Classes */
 .title {
   font-size: 24px;
   text-align: center;
+  position: relative;
+  background: var(--bg-2);
+  display: flex;
+  padding: 0px 32px;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  color: var(--title);
+  height: 62px;
+}
+
+.title > *:first-child,
+.title > *:last-child {
+  width: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.title > *:last-child {
+  justify-content: flex-end;
+}
+
+.title-button {
+  stroke: var(--title);
+  cursor: pointer;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.title-button.no-stroke {
+  stroke: none !important;
 }
 
 .section {
-  font-size: 24px;
-  font-weight: bold;
-  margin-top: 8px;
-  border-bottom: 1px solid var(--text);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.sub-section {
-  font-size: 18px;
-  font-weight: bold;
-  border-bottom: 1px solid var(--text);
-  padding-bottom: 1px;
-}
-
-.container {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -142,52 +193,67 @@ code.hljs {
   box-sizing: border-box;
 }
 
-.container.hidden {
-  display: none;
+.section-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 8px;
+  border-bottom: 1px solid var(--title);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--title);
 }
 
-/* Classes - Docs */
-.doc-column {
+.sub-section-title {
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid var(--title);
+  padding-bottom: 1px;
+  color: var(--title);
+}
+
+/* Docs */
+.docs-column {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.doc-column.tab {
+.docs-column.tab {
   padding: 0px 16px;
 }
 
-.doc-row {
+.docs-row {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-.doc-row.no-gap {
+.docs-row.no-gap {
   gap: 0px;
 }
 
-.doc-row.between {
+.docs-row.between {
   justify-content: space-between;
 }
 
-.doc-list {
+.docs-list {
   display: flex;
   flex-direction: column;
   line-height: 20px;
 }
 
-.doc-container {
+.docs-element {
   display: flex;
   flex-direction: column;
   width: 100%;
-  border: 1px solid var(--text);
+  border: 1px solid white;
   box-sizing: border-box;
 }
 
-.doc-title {
+.docs-element-title {
   width: 100%;
-  background: var(--bg);
+  background: black;
   box-sizing: border-box;
   cursor: pointer;
   display: flex;
@@ -197,15 +263,37 @@ code.hljs {
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  border-color: inherit;
 }
 
-.doc-title > *:first-child {
+.docs-element-title-name {
   padding: 8px;
-  border-right: 1px solid;
   flex: 1;
+  border-right: 1px solid;
+  border-color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  stroke: inherit;
 }
 
-.doc-title > *:last-child {
+.docs-element-title-name > div:first-child {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.docs-element-title-name > .chevron {
+  display: flex;
+  align-items: center;
+  stroke: inherit;
+}
+
+.docs-element.hidden > .docs-element-title > .docs-element-title-name > .chevron {
+  transform: rotate(90deg);
+}
+
+.docs-element-title-type {
   padding: 8px;
   font-size: 14px;
   width: 75px;
@@ -213,32 +301,31 @@ code.hljs {
   box-sizing: border-box;
 }
 
-.doc-body {
+.docs-element-body {
   display: flex;
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
-  border-top: 1px solid var(--text);
+  border-top: 1px solid;
+  border-color: inherit;
+  background: black;
 }
 
-.doc-container.hidden > .doc-body {
+.docs-element.hidden > .docs-element-body {
   display: none;
 }
 
-.doc-container.hidden > .doc-title * .icon-chevron {
-  transform: rotate(90deg);
-}
-
-.doc-body > * {
-  border-bottom: 1px solid var(--text);
+.docs-element-body > * {
+  border-bottom: 1px solid;
+  border-color: inherit;
   padding: 8px;
 }
 
-.doc-body > *:last-child {
+.docs-element-body > *:last-child {
   border-bottom: none;
 }
 
-.doc-keyword {
+.docs-keyword {
   background: var(--c-keyword);
   text-transform: uppercase;
   padding: 2px 8px;
@@ -250,56 +337,45 @@ code.hljs {
   color: var(--text);
 }
 
-.doc-type-link {
-  color: var(--c-type-link);
-}
-
-.doc-table-container {
+.docs-table-container {
   overflow-x: auto;
   margin-bottom: 8px;
 }
 
-.doc-table {
+.docs-table {
   border-collapse: collapse;
   width: 100%;
 }
 
-.doc-table * th {
+.docs-table * th {
   text-align: left;
   padding: 4px 8px;
 }
 
-.doc-table * td {
+.docs-table * td {
   text-align: left;
   vertical-align: top;
   padding: 4px 8px;
   border-right: 1px solid;
+  border-color: inherit;
 }
 
-.doc-table * tr {
-  border-bottom: 1px solid var(--text);
-  border-left: 1px solid var(--text);
-  border-right: 1px solid var(--text);
+.docs-table * tr {
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-color: inherit;
 }
 
-.doc-table * tr:first-child {
-  border-top: 1px solid var(--text);
-  background: var(--bg);
+.docs-table * tr:first-child {
+  border-top: 1px solid;
+  background: black;
+  border-color: inherit;
 }
 
-.doc-icon {
-  display: flex;
-  align-items: center;
-}
-
+/* Misc */
 pre {
   margin: 0px;
-}
-
-.info-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .test-code {
@@ -318,35 +394,12 @@ pre {
   font-size: 16px;
   font-weight: normal;
 }
-` +
-  Object.keys(theme.e)
-    .map(
-      (key) => `
-    .doc-container.${key} {
-      border-color: var(--e-${key});
-    }
-    .doc-container.${key} > .doc-title {
-      background: var(--e-${key}-bg);
-    }
-    .doc-container.${key} > .doc-body {
-      background: var(--e-${key}-bg-2);
-      border-color: var(--e-${key});
-    }
-    .doc-container.${key} * * {
-      border-color: var(--e-${key});
-    }
-    .doc-container.${key} * .doc-table {
-      border-color: var(--e-${key});
-    }
-    .doc-container.${key} * .doc-table * tr:first-child {
-      border-color: var(--e-${key});
-      background: var(--e-${key}-bg);
-    }
-    `
-    )
-    .join("");
 
-export function addCustomStyle() {
+${dynamicCss}
+${highlightjsCss}
+`;
+
+export function injectCss() {
   const style = document.createElement("style");
   style.innerHTML = css;
   document.head.appendChild(style);

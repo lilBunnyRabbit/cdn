@@ -1,8 +1,7 @@
-export function isTypeLink(typeLink) {
-  if (typeof typeLink !== "object") return false;
-  if (!typeLink.hasOwnProperty("id") || typeof typeLink.id !== "string") return false;
-  if (!typeLink.hasOwnProperty("name") || typeof typeLink.name !== "string") return false;
-  return true;
+export function sortedObjectMap(object, callback) {
+  Object.keys(object)
+    .sort((a, b) => a.localeCompare(b))
+    .forEach((key) => callback(key, object[key]));
 }
 
 export class TestError extends Error {
@@ -11,6 +10,14 @@ export class TestError extends Error {
     this.name = `❌ TEST "${name}"`;
     this.message = message;
   }
+}
+
+export function highlightCode(code, language = "javascript") {
+  if (window.hljs) {
+    return hljs.highlight(code, { language }).value;
+  }
+
+  return code;
 }
 
 export function formatCode(code) {

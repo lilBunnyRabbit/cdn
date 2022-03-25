@@ -4,10 +4,10 @@ module.exports = {
   mode: "production",
   entry: "./src/docs.js",
   output: {
-    filename: "docs.js",
+    filename: "projectDocs.js",
     path: path.resolve(__dirname, "dist"),
   },
   optimization: {
-    minimize: false,
+    minimize: true,
   },
 };

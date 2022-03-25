@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lilColor - Testing</title>
+    <script src="./src/lilcolor.js"></script>
+    <style></style>
+  </head>
+  <body>
+    <script>
+      const formatColor = (obj) => {
+        const keys = Object.keys(obj);
+        const name = keys.join("").toUpperCase();
+        return `${name}(${keys.map((key) => obj[key]).join(", ")})`;
+      };
+      // #83e665ff
+      // rgb(131, 230, 101)
+      // hsl(106, 72%, 65%)
+      const rgb = {
+        r: 131,
+        g: 230,
+        b: 101,
+      };
+
+      const hsl = RGBtoHSL(rgb);
+
+      console.log(formatColor(rgb), "=>", formatColor(hsl));
+      console.log(formatColor(hsl), "=>", formatColor(HSLtoRGB(hsl)));
+      console.log(formatColor(rgb), "=>", formatColor(RGBtoCMYK(rgb)));
+
+      function RGBtoHSL({ r, g, b }) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+
+        const cMax = Math.max(r, g, b);
+        const cMin = Math.min(r, g, b);
+        const diff = cMax - cMin;
+
+        let h = 0;
+        let s = 0;
+        let l = (cMax + cMin) / 2;
+
+        if (diff === 0) return { h, s, l };
+
+        switch (cMax) {
+          case r:
+            h = ((g - b) / diff) % 6;
+            break;
+          case g:
+            h = (b - r) / diff + 2;
+            break;
+          case b:
+            h = (r - g) / diff + 4;
+            break;
+        }
+        h *= 60;
+
+        s = diff / (1 - Math.abs(2 * l - 1));
+        return { h, s, l };
+      }
+
+      function HSLtoRGB({ h, s, l }) {
+        const c = (1 - Math.abs(2 * l - 1)) * s;
+        const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+        const m = l - c / 2;
+
+        const [r, g, b] = (() => {
+          if (0 <= h && h < 60) return [c, x, 0];
+          if (60 <= h && h < 120) return [x, c, 0];
+          if (120 <= h && h < 180) return [0, c, x];
+          if (180 <= h && h < 240) return [0, x, c];
+          if (240 <= h && h < 300) return [x, 0, c];
+          if (300 <= h && h < 360) return [c, 0, x];
+        })();
+
+        return {
+          r: Math.round((r + m) * 255),
+          g: Math.round((g + m) * 255),
+          b: Math.round((b + m) * 255),
+        };
+      }
+
+      function RGBtoCMYK({ r, g, b }) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+
+        
+        return {};
+      }
+    </script>
+  </body>
+</html>

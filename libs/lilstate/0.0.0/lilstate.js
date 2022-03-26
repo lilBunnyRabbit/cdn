@@ -126,7 +126,7 @@ class StateElement {
   }
 
   /**
-   * Get value for defined key from state.
+   * Get value for defined key from State.
    * @returns {StorageValue}
    */
   get() {
@@ -134,7 +134,7 @@ class StateElement {
   }
 
   /**
-   * Set value for defined key to state.
+   * Set value for defined key to State.
    * @param {StorageValue} value - Value to be stored.
    */
   set(value) {
@@ -425,7 +425,7 @@ class StateComponent {
    * @param {string[] | boolean} [elements]
    *   - If list of StateElement keys: those StateElement's will be attached.
    *     If "true": all initialized StateElement's will be attached.
-   *     If "falsy": no StateElement will be attached but if a listenere is present it will listen to all initialized StateElement's.
+   *     If "falsy": no StateElement will be attached but if a listener is present it will listen to all initialized StateElement's.
    */
   constructor(state, elements) {
     this.#state = state;

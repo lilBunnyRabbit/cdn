@@ -4,396 +4,367 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/github-dark.min.css" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
 
     <title>lilState v0.0.0</title>
     <script src="./lilstate.min.js"></script>
   </head>
   <body>
-    <script type="module">
-      import ProjectDoc from "../../../utils/doc/doc.js";
+    <script src="../../../utils/projectDocs.js"></script>
+    <script type="module" async>
+      await ProjectDocs.injectLibs().catch(console.error);
 
-      ProjectDoc.genInfo((info) => {
-        info("State management for vanilla JavaScript projects.");
-        info([
-          "",
-          "To install it either include the normal or minified script in your HTML file.",
-          {
-            type: "code",
-            data: '&lt;script src="https://lilbunnyrabbit.github.io/cdn/libs/lilstate/0.0.0/lilstate.js"&gt;&lt;/script&gt;',
-            lang: "html",
+      ProjectDocs.title = {
+        title: document.title,
+        links: {
+          github: "https://github.com/lilBunnyRabbit/lilstate",
+          home: "https://lilbunnyrabbit.github.io/lilstate/",
+        },
+      };
+
+      ProjectDocs.info = [
+        "To install it either include the normal or minified script in your HTML file.",
+        {
+          type: "code",
+          text: '\u003Cscript src="https://lilbunnyrabbit.github.io/cdn/libs/lilstate/0.0.0/lilstate.js"\u003E\u003C/script\u003E',
+          language: "html",
+        },
+        {
+          type: "code",
+          text: '\u003Cscript src="https://lilbunnyrabbit.github.io/cdn/libs/lilstate/0.0.0/lilstate.min.js"\u003E\u003C/script\u003E',
+          language: "html",
+        },
+      ];
+
+      ProjectDocs.docs = {
+        type: {
+          StorageValue: {
+            description: "Type of stored values in <class:State>.",
+            type: "bigint | boolean | symbol | number | object | string",
           },
-          {
-            type: "code",
-            data: '&lt;script src="https://lilbunnyrabbit.github.io/cdn/libs/lilstate/0.0.0/lilstate.min.js"&gt;&lt;/script&gt;',
-            lang: "html",
+          StorageValueType: {
+            description: "String type of <type:StorageValue>.",
+            type: '"bigint" | "boolean" | "symbol" | "number" | "object" | "string"',
           },
-        ]);
-        info([
-          "",
-          ["To use the components, destructure the exposed ", { id: "object-lilstate", name: "lilState" }, " object."],
-          {
-            type: "code",
-            data: "const { State, StateElement, StateComponent } = lilState;",
-            lang: "javascript",
-          },
-        ]);
-        info(["", ["For more examples please visit ", { id: "container-tests", name: "Tests" }, "."]]);
-      });
-
-      ProjectDoc.genDocs((docs) => {
-        const def = {
-          State: docs.define.class("State"),
-          StateElement: docs.define.class("StateElement"),
-          StateComponent: docs.define.class("StateComponent"),
-        };
-
-        const StorageValue = docs.type("StorageValue", {
-          description: [["Type of stored value used in ", def.State, "."]],
-          type: "bigint | boolean | symbol | number | object | string",
-        });
-
-        const StorageValueType = docs.type("StorageValueType", {
-          description: [["String type of ", StorageValue, "."]],
-          type: '"bigint" | "boolean" | "symbol" | "number" | "object" | "string"',
-        });
-
-        const StateConfig = docs.object("StateConfig", {
-          description: [[def.State, " configuration."]],
-          properties: {
-            useChangeEvent: {
-              description: 'Dispatch "change" event when any element is updated.',
-              type: "boolean",
-              optional: true,
-            },
-            useLogs: {
-              description: "Enable/disable logging.",
-              type: "boolean",
-              optional: true,
+        },
+        object: {
+          lilState: {
+            isOpen: true,
+            keywords: ["global"],
+            description: "Root object.",
+            properties: {
+              State: {
+                type: "<class:State>",
+                description: "Class representing <class:State>.",
+              },
+              StateElement: {
+                type: "<class:StateElement>",
+                description: "Class representing <class:StateElement>.",
+              },
+              StateComponent: {
+                type: "<class:StateComponent>",
+                description: "Class representing <class:StateComponent>.",
+              },
             },
           },
-        });
-
-        const StateElementConfig = docs.object("StateElementConfig", {
-          description: [[def.StateElement, " configuration."]],
-          properties: {
-            useLocalStorage: {
-              description: "Enable/disable using local storage for storing and retrieving data.",
-              type: "boolean",
-              optional: true,
-            },
-            useEvents: {
-              description: 'Enable/disable "change" event for the element.',
-              type: "boolean",
-              optional: true,
-            },
-          },
-          methods: {
-            onBeforeSet: {
-              description: "Callback before the value is set.",
-              arguments: [
-                {
-                  name: "value",
-                  type: StorageValue,
-                  description: "New value before it's saved.",
-                },
-              ],
-              returns: StorageValue,
-              optional: true,
+          StateConfig: {
+            description: "<class:State> configuration.",
+            properties: {
+              useChangeEvent: {
+                type: "boolean",
+                optional: true,
+                description: 'Dispatch "change" event when any element is updated.',
+              },
+              useLogs: {
+                type: "boolean",
+                optional: true,
+                description: "Enable/disable logging.",
+              },
             },
           },
-        });
-
-        const StateElementOptions = docs.object("StateElementOptions", {
-          description: [[def.StateElement, " options for creation."]],
-          properties: {
-            defaultValue: {
-              description: [
-                [
-                  "Default ",
-                  def.StateElement,
-                  " value used when reseting and when no value is stored in local storage.",
+          StateElementConfig: {
+            description: "<class:StateElement> configuration.",
+            properties: {
+              useLocalStorage: {
+                type: "boolean",
+                optional: true,
+                description: "Enable/disable using local storage for storing and retrieving data.",
+              },
+              useEvents: {
+                type: "boolean",
+                optional: true,
+                description: 'Enable/disable "change" event for the element.',
+              },
+            },
+            methods: {
+              onBeforeSet: {
+                returns: "<type:StorageValue>",
+                optional: true,
+                description: "Callback before the value is set.",
+                arguments: [
+                  {
+                    name: "value",
+                    type: "<type:StorageValue>",
+                    description: "New value before it's saved.",
+                  },
                 ],
-              ],
-              type: StorageValue,
-            },
-            config: {
-              description: [[def.StateElement, " configuration."]],
-              type: StateElementConfig,
-              optional: true,
-            },
-          },
-        });
-
-        docs.object("lilState", {
-          description: "Root object.",
-          global: true,
-          properties: {
-            State: {
-              type: def.State,
-              description: [["Class representing ", def.State, "."]],
-            },
-            StateElement: {
-              type: def.StateElement,
-              description: [["Class representing ", def.StateElement, "."]],
-            },
-            StateComponent: {
-              type: def.StateElement,
-              description: [["Class representing ", def.StateComponent, "."]],
-            },
-          },
-        });
-
-        docs.class(def.State, {
-          extends: "EventTarget",
-          description: ["Represents state.", "This class is the main control unit for state management."],
-          new: {
-            returns: def.State,
-            description: "Create new State.",
-            arguments: [
-              {
-                name: "config",
-                description: [[def.State, " configuration."]],
-                type: StateConfig,
-                optional: true,
               },
-              {
-                name: "initElements",
-                description: [['"List" of ', def.StateElement, "'s to initialize."]],
-                type: ["{ [key: string]: ", StateElementOptions, " }"],
-                optional: true,
+            },
+          },
+          StateElementOptions: {
+            description: "<class:StateElement> options for creation.",
+            properties: {
+              defaultValue: {
+                type: "<type:StorageValue>",
+                description:
+                  "Default <class:StateElement> value used when reseting and when no value is stored in local storage.",
               },
-            ],
-          },
-          properties: {
-            storage: {
-              description: [[def.State, " storage."]],
-              type: ["Map<string, ", StorageValue, ">"],
-              keyword: "read-only",
-            },
-            elements: {
-              description: "List of initialized StateElement's.",
-              type: ["Map<string, ", def.StateElement, ">"],
-              keyword: "read-only",
-            },
-            config: {
-              description: [[def.State, " configuration."]],
-              type: StateConfig,
-              keyword: "read-only",
+              config: {
+                type: "<object:StateElementConfig>",
+                optional: true,
+                description: "<class:StateElement> configuration.",
+              },
             },
           },
-          methods: {
-            set: {
-              description: "Set value for selected key. It's not advised to use this method manually.",
+        },
+        class: {
+          State: {
+            extends: "EventTarget",
+            description: "Class representing main control unit for state management.",
+            constructor: {
+              returns: "<class:State>",
+              description: "Create new <class:State>.",
               arguments: [
-                {
-                  name: "key",
-                  type: "string",
-                  description: "Selected key.",
-                },
-                {
-                  name: "value",
-                  type: StorageValue,
-                  description: "Value to be stored.",
-                },
                 {
                   name: "config",
-                  type: StateElementConfig,
-                  description: [[def.StateElement, " configuration."]],
+                  type: "<object:StateConfig>",
+                  optional: true,
+                  description: "<class:State> configuration.",
+                },
+                {
+                  name: "initElements",
+                  type: "{ [key: string]: <object:StateElementOptions> }",
+                  optional: true,
+                  description: '"List" of <class:StateElement>\'s to initialize.',
                 },
               ],
-              returns: "void",
             },
-            get: {
-              description: "Get stored value for selected key.",
+            properties: {
+              storage: {
+                type: "Map<string, <type:StorageValue>>",
+                keywords: ["read-only"],
+                description: "<class:State> storage.",
+              },
+              elements: {
+                type: "Map<string, <class:StateElement>>",
+                keywords: ["read-only"],
+                description: '"List" of initialized <class:StateElement>\'s.',
+              },
+              config: {
+                type: "<object:StateConfig>",
+                keywords: ["read-only"],
+                description: "<class:State> configuration.",
+              },
+            },
+            methods: {
+              set: {
+                returns: "void",
+                description: ["Set value for selected key.", "It's not advised to use this method manually."],
+                arguments: [
+                  {
+                    name: "key",
+                    type: "string",
+                    description: "Selected key.",
+                  },
+                  {
+                    name: "value",
+                    type: "<type:StorageValue>",
+                    description: "Value to be stored.",
+                  },
+                  {
+                    name: "config",
+                    type: "<object:StateElementConfig>",
+                    description: "<class:StateElement> configuration.",
+                  },
+                ],
+              },
+              get: {
+                returns: "<type:StorageValue>",
+                description: "Get stored value for selected key.",
+                arguments: [
+                  {
+                    name: "key",
+                    type: "string",
+                    description: "Selected key.",
+                  },
+                ],
+              },
+              init: {
+                returns: "<class:StateElement>",
+                description: "Initialize new <class:StateElement>.",
+                arguments: [
+                  {
+                    name: "key",
+                    type: "string",
+                    description: "Unique key",
+                  },
+                  {
+                    name: "opts",
+                    type: "<object:StateElementOptions>",
+                    description: "<class:StateElement> options.",
+                  },
+                ],
+              },
+              attach: {
+                returns: "<class:StateElement>",
+                description: "Attach to initialized <class:StateElement>.",
+                arguments: [
+                  {
+                    name: "key",
+                    type: "string",
+                    description: "Selected key.",
+                  },
+                ],
+              },
+            },
+          },
+          StateElement: {
+            description: [
+              "Class representing state for unique key.",
+              "The purpose of this class is to control a specific <class:State> element.",
+            ],
+            constructor: {
+              returns: "<class:StateElement>",
+              description: "Create new <class:StateElement>.",
               arguments: [
+                {
+                  name: "state",
+                  type: "<class:State>",
+                  description: "State that the <class:StateElement> belongs to.",
+                },
                 {
                   name: "key",
                   type: "string",
                   description: "Selected key.",
-                },
-              ],
-              returns: StorageValue,
-            },
-            init: {
-              description: "Initialize new StateElement.",
-              arguments: [
-                {
-                  name: "key",
-                  type: "string",
-                  description: "Unique key.",
                 },
                 {
                   name: "opts",
-                  type: StateElementOptions,
-                  description: [[def.StateElement, " options."]],
+                  type: "<object:StateElementOptions>",
+                  description: "<class:StateElement> options.",
                 },
               ],
-              returns: def.StateElement,
             },
-            attach: {
-              description: "Attach to initialized StateElement.",
-              arguments: [
-                {
-                  name: "key",
-                  type: "string",
-                  description: "Selected key.",
-                },
-              ],
-              returns: def.StateElement,
-            },
-          },
-        });
-
-        docs.class(def.StateElement, {
-          description: [
-            "Represents state for unique key.",
-            ["The purpose of this class is to control a specific ", def.State, " element."],
-          ],
-          new: {
-            returns: def.StateElement,
-            description: "Create new StateElement.",
-            arguments: [
-              {
-                name: "state",
-                type: def.State,
-                description: [["State that the ", def.StateElement, " belongs to."]],
+            properties: {
+              state: {
+                type: "<class:State>",
+                keywords: ["read-only"],
+                description: "<class:State> that the <class:StateElement> belongs to.",
               },
-              {
-                name: "key",
+              key: {
                 type: "string",
-                description: "Selected key.",
+                keywords: ["read-only"],
+                description: "<class:StateElement>'s unique key.",
               },
-              {
-                name: "opts",
-                type: StateElementOptions,
-                description: [[def.StateElement, " options."]],
+              defaultValue: {
+                type: "<type:StorageValue>",
+                keywords: ["read-only"],
+                description: "<class:StateElement>'s default value.",
               },
+              type: {
+                type: "<type:StorageValueType>",
+                keywords: ["read-only"],
+                description: "<class:StateElement>'s default value type.",
+              },
+              config: {
+                type: "<object:StateElementConfig>",
+                keywords: ["read-only"],
+                description: "<class:StateElement>'s configuration.",
+              },
+            },
+            methods: {
+              get: {
+                returns: "<type:StorageValue>",
+                description: "Get value for defined key from <class:State>.",
+              },
+              set: {
+                returns: "void",
+                description: "Set value for defined key to <class:State>.",
+                arguments: [
+                  {
+                    name: "value",
+                    type: "<type:StorageValue>",
+                    description: "Value to be stored.",
+                  },
+                ],
+              },
+              reset: {
+                returns: "void",
+                description: "Reset value to default value.",
+              },
+              addListener: {
+                returns: "<class:StateElement>",
+                description: "Assign event listener for this <class:StateElement>.",
+                arguments: [
+                  {
+                    name: "listener",
+                    type: "(value: <type:StorageValue>) => <class:StateElement>",
+                    description: "Event callback.",
+                  },
+                ],
+              },
+            },
+          },
+          StateComponent: {
+            description: [
+              "Class representing <class:StateComponent> for selected <class:StateElement>'s.",
+              'The purpose of this class is to be extended and override its "$onStateChange" method to listen to events.',
             ],
-          },
-          properties: {
-            state: {
-              description: [["State that the ", def.StateElement, " belongs to."]],
-              type: def.State,
-              keyword: "read-only",
-            },
-            key: {
-              description: [[def.StateElement, "'s unique key."]],
-              type: "string",
-              keyword: "read-only",
-            },
-            defaultValue: {
-              description: [[def.StateElement, "'s default value."]],
-              type: StorageValue,
-              keyword: "read-only",
-            },
-            type: {
-              description: [[def.StateElement, "'s default value type."]],
-              type: StorageValueType,
-              keyword: "read-only",
-            },
-            config: {
-              description: [[def.StateElement, "'s configuration."]],
-              type: StateElementConfig,
-              keyword: "read-only",
-            },
-          },
-          methods: {
-            get: {
-              description: "Get value for defined key from state.",
-              returns: StorageValue,
-            },
-            set: {
-              description: "Set value for defined key to state.",
+            constructor: {
+              returns: "<class:StateComponent>",
+              description: "Create new <class:StateComponent>.",
               arguments: [
                 {
-                  name: "value",
-                  type: StorageValue,
-                  description: "Value to be stored.",
+                  name: "state",
+                  type: "<class:State>",
+                  description: "<class:State> that the <class:StateComponent> belongs to.",
                 },
-              ],
-              returns: "void",
-            },
-            reset: {
-              description: "Reset value to default value.",
-              returns: "void",
-            },
-            addListener: {
-              description: [["Assign event listener for this ", def.StateElement, "."]],
-              arguments: [
                 {
-                  name: "listener",
-                  type: ["(value: ", StorageValue, ") => ", def.StateElement],
-                  description: "Event callback.",
-                },
-              ],
-            },
-          },
-        });
-
-        docs.class(def.StateComponent, {
-          description: [
-            ["Represents StateComponent for selected ", def.StateElement, "'s."],
-            'The purpose of this class is to be extended and override its "$onStateChange" method to listen to events.',
-          ],
-          new: {
-            returns: def.StateComponent,
-            description: "Create new StateComponent.",
-            arguments: [
-              {
-                name: "state",
-                description: [["State that the ", def.StateComponent, " belongs to."]],
-                type: def.State,
-              },
-              {
-                name: "elements",
-                optional: true,
-                type: "string[] | boolean",
-                description: [
-                  ["If list of ", def.StateElement, " keys: those ", def.StateElement, "'s will be attached."],
-                  ['If "true": all initialized ', def.StateElement, "'s will be attached."],
-                  [
-                    'If "falsy": no ',
-                    def.StateElement,
-                    " will be attached but if a listenere is present it will listen to all initialized ",
-                    def.StateElement,
-                    "'s.",
+                  name: "elements",
+                  type: "string[] | boolean",
+                  optional: true,
+                  description: [
+                    "If list of <class:StateElement> keys: those <class:StateElement>'s will be attached.",
+                    'If "true": all initialized <class:StateElement>\'s will be attached.',
+                    'If "falsy": no <class:StateElement> will be attached but if a listener is present it will listen to all initialized <class:StateElement>\'s.',
                   ],
+                },
+              ],
+            },
+            properties: {
+              states: {
+                type: "{ [key: string]: <class:StateElement> }",
+                keywords: ["read-only"],
+                description: "Object of attached <class:StateElement>'s.",
+              },
+            },
+            methods: {
+              $onStateChange: {
+                returns: "void",
+                keywords: ["abstract"],
+                description: [
+                  "Triggers when any of the attached <class:StateElement>'s is changed.",
+                  "If no <class:StateElement> is attached it will emit when any initialized <class:StateElement> is changed.",
                 ],
               },
-            ],
-          },
-          properties: {
-            states: {
-              description: [["Object of attached ", def.StateElement, "'s."]],
-              type: ["{ [key: string]: ", def.StateElement, " }"],
-              keyword: "read-only",
+              $resetAll: {
+                returns: "void",
+                description: "Reset all attached <class:StateElement>'s to their default value.",
+              },
             },
           },
-          methods: {
-            $onStateChange: {
-              description: [
-                ["Triggers when any of the attached ", def.StateElement, "'s is changed. "],
-                [
-                  "If no ",
-                  def.StateElement,
-                  " is attached it will emit when any initialized ",
-                  def.StateElement,
-                  " is changed.",
-                ],
-              ],
-              returns: "void",
-              keyword: "abstract",
-            },
-            $resetAll: {
-              description: [["Reset all attached ", def.StateElement, "'s to their default value."]],
-            },
-          },
-        });
-      });
+        },
+      };
 
-      ProjectDoc.genTests((test) => {
+      ProjectDocs.genTests((test) => {
         test("Can access all objects", (assert) => {
           const { State, StateElement, StateComponent } = lilState;
 
@@ -412,7 +383,7 @@
         test("Can create State with configuration", (assert) => {
           const config = {
             useChangeEvent: true,
-            useLogs: true,
+            useLogs: false,
           };
 
           const state = new State(config);
